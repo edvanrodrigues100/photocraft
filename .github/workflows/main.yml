@@ -16,6 +16,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           
+      - name: Preparar Android SDK
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "platforms;android-33" "build-tools;34.0.0"
+          
       - name: Configurar Android NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk
@@ -33,6 +37,8 @@ jobs:
       - name: Compilar o APK
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
         run: cargo apk build -p photocraft --release
           
       - name: Disponibilizar o APK para Download
