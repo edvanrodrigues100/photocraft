@@ -31,15 +31,12 @@ jobs:
         with:
           targets: aarch64-linux-android
           
-      - name: Instalar empacotador (cargo-apk)
-        run: cargo install cargo-apk
-        
-      - name: Compilar o APK
+      - name: Compilar o APK via xtask
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_HOME: /usr/local/lib/android/sdk
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-        run: cargo apk build -p photocraft --lib --release
+        run: cargo xtask build-android --release
           
       - name: Disponibilizar o APK para Download
         uses: actions/upload-artifact@v4
