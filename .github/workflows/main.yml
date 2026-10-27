@@ -31,16 +31,27 @@ jobs:
         with:
           targets: aarch64-linux-android
           
-      - name: Compilar o APK via xtask
+      - name: Instalar empacotador (cargo-apk)
+        run: cargo install cargo-apk
+        
+      - name: Forçar compatibilidade Android
+        run: |
+          echo "" >> apps/photocraft/Cargo.toml
+          echo "[lib]" >> apps/photocraft/Cargo.toml
+          echo "crate-type = [\"cdylib\"]" >> apps/photocraft/Cargo.toml
+          echo "path = \"src/main.rs\"" >> apps/photocraft/Cargo.toml
+          
+      - name: Compilar o APK
         env:
           ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
           ANDROID_HOME: /usr/local/lib/android/sdk
           ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-        run: cargo xtask build-android --release
+        run: cargo apk build -p photocraft --release
           
       - name: Disponibilizar o APK para Download
         uses: actions/upload-artifact@v4
         with:
           name: PhotoCraft-APK
           path: '**/*.apk'
+          
           
