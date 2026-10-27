@@ -34,12 +34,18 @@ jobs:
       - name: Instalar empacotador (cargo-apk)
         run: cargo install cargo-apk
         
-      - name: Forçar compatibilidade Android
+      - name: Forçar compatibilidade e dependências
         run: |
-          echo "" >> apps/photocraft/Cargo.toml
-          echo "[lib]" >> apps/photocraft/Cargo.toml
-          echo "crate-type = [\"cdylib\"]" >> apps/photocraft/Cargo.toml
-          echo "path = \"src/main.rs\"" >> apps/photocraft/Cargo.toml
+          cat <<EOF >> apps/photocraft/Cargo.toml
+          
+          [lib]
+          crate-type = ["cdylib"]
+          path = "src/main.rs"
+          
+          [dependencies.android-activity]
+          version = "0.6"
+          features = ["game-activity"]
+          EOF
           
       - name: Compilar o APK
         env:
@@ -53,5 +59,4 @@ jobs:
         with:
           name: PhotoCraft-APK
           path: '**/*.apk'
-          
           
